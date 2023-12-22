@@ -4,13 +4,24 @@ const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000
 
-app.use(cors())
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
+// middleware =======================
+app.use(cors({
+    origin: [
+        'https://taskmanager-1f1e7.web.app',
+        'http://localhost:5173',
+    ]
+}));
 app.use(express.json())
 
 // taskManagerUser
 // gGt6EqMr2FylziMY
 console.log(process.env.DB_USER)
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.0db2mvq.mongodb.net/?retryWrites=true&w=majority`;
 // const uri = "mongodb+srv://<username>:<password>@cluster0.0db2mvq.mongodb.net/?retryWrites=true&w=majority";
 
@@ -36,6 +47,12 @@ async function run() {
         app.post('/tasks', async (req, res) => {
             const task = req.body
             const result = await taskCollection.insertOne(task)
+            res.send(result)
+        })
+        app.delete('/tasks/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await taskCollection.deleteOne(query)
             res.send(result)
         })
         // Send a ping to confirm a successful connection
