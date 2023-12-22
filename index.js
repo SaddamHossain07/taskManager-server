@@ -12,8 +12,9 @@ app.use((req, res, next) => {
 // middleware =======================
 app.use(cors({
     origin: [
-        'https://taskmanager-1f1e7.web.app',
-        'http://localhost:5173',
+        'http://localhost:5173/',
+        'http://localhost:5174/',
+        'https://taskmanager-1f1e7.web.app/'
     ]
 }));
 app.use(express.json())
